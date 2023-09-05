@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+  web:
+    build: ./frontend
+    # image: yolix/todo-web-app
+    environment: 
+      REACT_APP_API_URL: http://localhost:3001/api
+    depends_on:
+      - todo-api
+    ports:
+      - "3000:3000"
+  todo-api:
+    build: ./backend
+    # image: yolix/todo-api
+    depends_on:
+      - mongo
+    ports:
+      - "3001:3001"
+
+  mongo:
+    image: mongo
+    restart: always
+    volumes: 
+      - mongodb:/data/db
+    environment: 
+      MONGODB_INITDB_ROOT_USERNAME: username
+      MONGODB_INITDB_ROOT_PASSWORD: password
+
+volumes:
+  mongodb:
+    name: mongodb
+  mongodb_data:
+    driver: local
+    driver_opts: 
+      device: '/tmp/data'
+      type: 'none'
